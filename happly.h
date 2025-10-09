@@ -119,8 +119,7 @@ template <> struct SerializeType< int8_t>               { typedef int32_t   type
 // last int/char arg is to resolve ambiguous overloads, just always pass 0 and the int version will be preferred
 template <typename S, typename T>
 S* addressIfSame(T&, char) {
-  throw std::runtime_error("tried to take address for types that are not same");
-  return nullptr;}
+  throw std::runtime_error("tried to take address for types that are not same");}
 template <typename S>
 S* addressIfSame(S& t, int) {return &t;}
 
@@ -1055,8 +1054,6 @@ public:
       } catch (const std::runtime_error&) {
         throw orig_e;
       }
-
-      throw orig_e;
     }
   }
 
