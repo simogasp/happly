@@ -911,6 +911,7 @@ public:
     // Copy to canonical type. Often a no-op, but takes care of standardizing widths across platforms.
     std::vector<std::vector<typename CanonicalName<T>::type>> canonicalListVec;
     for (const std::vector<T>& subList : data) {
+      canonicalListVec.reserve(subList.size());
       canonicalListVec.emplace_back(subList.begin(), subList.end());
     }
 
