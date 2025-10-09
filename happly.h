@@ -1419,10 +1419,7 @@ public:
    * @return True if exists.
    */
   bool hasElement(const std::string& target) {
-    for (Element& e : elements) {
-      if (e.name == target) return true;
-    }
-    return false;
+    return std::ranges::any_of(elements, [&target](const Element& e) { return e.name == target; });
   }
 
 
