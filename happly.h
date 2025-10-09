@@ -53,7 +53,7 @@ SOFTWARE.
 // clang-format on
 
 #include <array>
-#include <cctype>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -921,8 +921,9 @@ public:
       canonicalListVec.emplace_back(subList.begin(), subList.end());
     }
 
-    properties.push_back(std::unique_ptr<Property>(
-        new TypedListProperty<typename CanonicalName<T>::type>(propertyName, canonicalListVec)));
+    properties.emplace_back(
+      std::make_unique<TypedListProperty<typename CanonicalName<T>::type>>(propertyName, canonicalListVec));
+
   }
 
   /**
