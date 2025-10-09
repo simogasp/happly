@@ -210,14 +210,14 @@ public:
    *
    * @return
    */
-  virtual std::size_t size() = 0;
+  [[nodiscard]] virtual std::size_t size() = 0;
 
   /**
    * @brief A string naming the type of the property
    *
    * @return
    */
-  virtual std::string propertyTypeName() = 0;
+  [[nodiscard]] virtual std::string propertyTypeName() = 0;
 };
 
 inline namespace details {
@@ -809,8 +809,8 @@ public:
    *
    * @return Whether the target property exists.
    */
-  bool hasProperty(const std::string& target) {
-    for (std::unique_ptr<Property>& prop : properties) {
+  [[nodiscard]] bool hasProperty(const std::string& target) const {
+    for (const std::unique_ptr<Property>& prop : properties) {
       if (prop->name == target) {
         return true;
       }
@@ -827,7 +827,7 @@ public:
    * @return Whether the target property exists.
    */
   template <class T>
-  bool hasPropertyType(const std::string& target) const {
+  [[nodiscard]] bool hasPropertyType(const std::string& target) const {
     for (const std::unique_ptr<Property>& prop : properties) {
       if (prop->name == target) {
         auto* castedProp = dynamic_cast<TypedProperty<T>*>(prop.get());
