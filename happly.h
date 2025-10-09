@@ -1342,16 +1342,17 @@ public:
    */
   void validate() {
 
-    for (std::size_t iE = 0; iE < elements.size(); ++iE) {
-      for (const auto c : elements[iE].name) {
-        if (std::isspace(c)) {
-          throw std::runtime_error("Ply validate: illegal whitespace in element name " + elements[iE].name);
-        }
+    // Make sure no element names have whitespace
+    for (const auto& elem : elements) {
+      if (containsWhitespace(elem.name)) {
+        throw std::runtime_error("Ply validate: illegal whitespace in element name " + elem.name);
       }
-      for (std::size_t jE = iE + 1; jE < elements.size(); ++jE) {
-        if (elements[iE].name == elements[jE].name) {
-          throw std::runtime_error("Ply validate: duplcate element name " + elements[iE].name);
-        }
+    }
+    // Make sure no elements have duplicate names
+    std::unordered_set<std::string_view> seen;
+    for (const auto& elem : elements) {
+      if (!seen.insert(elem.name).second) {
+        throw std::runtime_error("Ply validate: multiple elements with name " + elem.name);
       }
     }
 
