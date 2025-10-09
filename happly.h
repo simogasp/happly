@@ -62,6 +62,8 @@ SOFTWARE.
 #include <string>
 #include <type_traits>
 #include <vector>
+#include <string_view>
+#include <unordered_set>
 #include <climits>
 
 // General namespace wrapping all Happly things.
