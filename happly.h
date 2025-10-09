@@ -96,24 +96,24 @@ inline namespace details {
 
 // A pointer for the equivalent/smaller equivalent of a type (e.g. when a double is requested, a float works too, etc)
 // long int is intentionally absent to avoid platform confusion
-template <class T> struct TypeChain                 { bool hasChildType = false;   typedef T            type; };
-template <> struct TypeChain<int64_t>               { bool hasChildType = true;    typedef int32_t      type; };
-template <> struct TypeChain<int32_t>               { bool hasChildType = true;    typedef int16_t      type; };
-template <> struct TypeChain<int16_t>               { bool hasChildType = true;    typedef int8_t       type; };
-template <> struct TypeChain<uint64_t>              { bool hasChildType = true;    typedef uint32_t     type; };
-template <> struct TypeChain<uint32_t>              { bool hasChildType = true;    typedef uint16_t     type; };
-template <> struct TypeChain<uint16_t>              { bool hasChildType = true;    typedef uint8_t      type; };
-template <> struct TypeChain<double>                { bool hasChildType = true;    typedef float        type; };
+template <class T> struct TypeChain                 { static constexpr bool hasChildType = false;   using type = T; };
+template <> struct TypeChain<int64_t>               { static constexpr bool hasChildType = true;    using type = int32_t; };
+template <> struct TypeChain<int32_t>               { static constexpr bool hasChildType = true;    using type = int16_t; };
+template <> struct TypeChain<int16_t>               { static constexpr bool hasChildType = true;    using type = int8_t; };
+template <> struct TypeChain<uint64_t>              { static constexpr bool hasChildType = true;    using type = uint32_t; };
+template <> struct TypeChain<uint32_t>              { static constexpr bool hasChildType = true;    using type = uint16_t; };
+template <> struct TypeChain<uint16_t>              { static constexpr bool hasChildType = true;    using type = uint8_t; };
+template <> struct TypeChain<double>                { static constexpr bool hasChildType = true;    using type = float; };
 
-template <class T> struct CanonicalName                     { typedef T         type; };
-template <> struct CanonicalName<char>                      { typedef int8_t    type; };
-template <> struct CanonicalName<unsigned char>             { typedef uint8_t   type; };
-template <> struct CanonicalName<std::size_t>               { typedef std::conditional_t<std::is_same_v<std::make_signed_t<std::size_t>, int>, uint32_t, uint64_t> type; };
+template <class T> struct CanonicalName                     { using type = T; };
+template <> struct CanonicalName<char>                      { using type = int8_t; };
+template <> struct CanonicalName<unsigned char>             { using type = uint8_t; };
+template <> struct CanonicalName<std::size_t>               { using type = std::conditional_t<std::is_same_v<std::make_signed_t<std::size_t>, int>, uint32_t, uint64_t>; };
 
 // Used to change behavior of >> for 8bit ints, which does not do what we want.
-template <class T> struct SerializeType                 { typedef T         type; };
-template <> struct SerializeType<uint8_t>               { typedef int32_t   type; };
-template <> struct SerializeType< int8_t>               { typedef int32_t   type; };
+template <class T> struct SerializeType                 { using type = T; };
+template <> struct SerializeType<uint8_t>               { using type = int32_t; };
+template <> struct SerializeType< int8_t>               { using type = int32_t; };
 
 // Give address only if types are same (used below when conditionally copying data)
 // last int/char arg is to resolve ambiguous overloads, just always pass 0 and the int version will be preferred
