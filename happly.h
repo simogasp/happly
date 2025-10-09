@@ -124,6 +124,20 @@ concept SameAs = std::is_same_v<T, U>;
 } // namespace
 
 /**
+ * @brief Check if a string contains any whitespace characters.
+ *
+ * @param[in] str String to check.
+ *
+ * @return true if the string contains whitespace, false otherwise.
+ */
+inline bool containsWhitespace(std::string_view str) {
+  return std::ranges::any_of(str, [](unsigned char c) {
+    return std::isspace(c);
+  });
+}
+
+
+/**
  * @brief A generic property, which is associated with some element. Can be plain Property or a ListProperty, of some
  * type.  Generally, the user should not need to interact with these directly, but they are exposed in case someone
  * wants to get clever.
@@ -1043,26 +1057,29 @@ public:
    */
   void validate() const {
 
-    // Make sure no properties have duplicate names, and no names have whitespace
-    for (std::size_t iP = 0; iP < properties.size(); iP++) {
-      for (const char c : properties[iP]->name) {
-        if (std::isspace(c)) {
-          throw std::runtime_error("Ply validate: illegal whitespace in name " + properties[iP]->name);
-        }
+    // Make sure no property names have whitespace
+    for (const auto& property : properties) {
+      if (containsWhitespace(property->name)) {
+        throw std::runtime_error("Ply validate: illegal whitespace in name " + property->name);
       }
-      for (std::size_t jP = iP + 1; jP < properties.size(); jP++) {
-        if (properties[iP]->name == properties[jP]->name) {
-          throw std::runtime_error("Ply validate: multiple properties with name " + properties[iP]->name);
-        }
+    }
+    // Make sure no properties have duplicate names, and no names have whitespace
+    std::unordered_set<std::string_view> seen;
+    for (const auto& property : properties) {
+      if (!seen.insert(property->name).second) {
+        throw std::runtime_error("Ply validate: multiple properties with name " + property->name);
       }
     }
 
-    // Make sure all properties have right length
-    for (const auto & property : properties) {
-      if (property->size() != count) {
-        throw std::runtime_error("Ply validate: property has wrong size. " + property->name +
-                                 " does not match element size.");
-      }
+    // Make sure all properties have the right size
+    if (!std::ranges::all_of(properties, [this](const auto& p) {
+          if (p->size() != count) {
+            std::cerr << "Error: Property '" << p->name << "' has size " << p->size()
+                      << " but element '" << name << "' expects " << count << std::endl;
+            return false;
+          }
+          return true;})) {
+      throw std::runtime_error("Ply validate: some properties have the wrong size");
     }
   }
 
