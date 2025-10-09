@@ -844,7 +844,7 @@ public:
   std::vector<std::string> getPropertyNames() {
     std::vector<std::string> names;
     names.reserve(properties.size());
-    for (std::unique_ptr<Property>& p : properties) {
+    for (const std::unique_ptr<Property>& p : properties) {
       names.push_back(p->name);
     }
     return names;
@@ -931,7 +931,7 @@ public:
   std::vector<T> getProperty(const std::string& propertyName) {
 
     // Find the property
-    std::unique_ptr<Property>& prop = getPropertyPtr(propertyName);
+    const auto& prop = getPropertyPtr(propertyName);
 
     // Get a copy of the data with auto-promoting type magic
     return getDataFromPropertyRecursive<T, T>(prop.get());
@@ -950,7 +950,7 @@ public:
   std::vector<T> getPropertyType(const std::string& propertyName) {
 
     // Find the property
-    std::unique_ptr<Property>& prop = getPropertyPtr(propertyName);
+    const auto& prop = getPropertyPtr(propertyName);
     auto* castedProp = dynamic_cast<TypedProperty<T>*>(prop.get());
     if (castedProp) {
       return castedProp->data;
@@ -974,7 +974,7 @@ public:
   std::vector<std::vector<T>> getListProperty(const std::string& propertyName) {
 
     // Find the property
-    std::unique_ptr<Property>& prop = getPropertyPtr(propertyName);
+    const auto& prop = getPropertyPtr(propertyName);
 
     // Get a copy of the data with auto-promoting type magic
     return getDataFromListPropertyRecursive<T, T>(prop.get());
@@ -993,7 +993,7 @@ public:
   std::vector<std::vector<T>> getListPropertyType(const std::string& propertyName) {
 
     // Find the property
-    std::unique_ptr<Property>& prop = getPropertyPtr(propertyName);
+    const auto& prop = getPropertyPtr(propertyName);
     auto* castedProp = dynamic_cast<TypedListProperty<T>*>(prop.get());
     if (castedProp) {
       return unflattenList(castedProp->flattenedData, castedProp->flattenedIndexStart);
@@ -1020,7 +1020,7 @@ public:
   std::vector<std::vector<T>> getListPropertyAnySign(const std::string& propertyName) {
 
     // Find the property
-    std::unique_ptr<Property>& prop = getPropertyPtr(propertyName);
+    const auto& prop = getPropertyPtr(propertyName);
 
     // Get a copy of the data with auto-promoting type magic
     try {
@@ -1079,11 +1079,11 @@ public:
    *
    * @param outStream The stream to use.
    */
-  void writeHeader(std::ostream& outStream) {
+  void writeHeader(std::ostream& outStream) const {
 
     outStream << "element " << name << " " << count << "\n";
 
-    for (std::unique_ptr<Property>& p : properties) {
+    for (const auto& p : properties) {
       p->writeHeader(outStream);
     }
   }
@@ -1332,7 +1332,7 @@ public:
   void validate() {
 
     for (std::size_t iE = 0; iE < elements.size(); ++iE) {
-      for (char c : elements[iE].name) {
+      for (const auto c : elements[iE].name) {
         if (std::isspace(c)) {
           throw std::runtime_error("Ply validate: illegal whitespace in element name " + elements[iE].name);
         }
