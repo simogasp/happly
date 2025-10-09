@@ -108,7 +108,7 @@ template <> struct TypeChain<double>                { bool hasChildType = true; 
 template <class T> struct CanonicalName                     { typedef T         type; };
 template <> struct CanonicalName<char>                      { typedef int8_t    type; };
 template <> struct CanonicalName<unsigned char>             { typedef uint8_t   type; };
-template <> struct CanonicalName<size_t>                    { typedef std::conditional<std::is_same<std::make_signed<size_t>::type, int>::value, uint32_t, uint64_t>::type type; };
+template <> struct CanonicalName<std::size_t>               { typedef std::conditional_t<std::is_same_v<std::make_signed_t<std::size_t>, int>, uint32_t, uint64_t> type; };
 
 // Used to change behavior of >> for 8bit ints, which does not do what we want.
 template <class T> struct SerializeType                 { typedef T         type; };
@@ -1045,10 +1045,10 @@ public:
       // If the usual approach fails, look for a version with opposite signed-ness
       try {
 
-        // This type has the oppopsite signeness as the input type
-        typedef typename CanonicalName<T>::type Tcan;
-        typedef typename std::conditional<std::is_signed<Tcan>::value, typename std::make_unsigned<Tcan>::type,
-                                          typename std::make_signed<Tcan>::type>::type OppsignType;
+        // This type has the opposite signeness as the input type
+        using Tcan = CanonicalName<T>::type;
+        using OppsignType = std::conditional_t<std::is_signed_v<Tcan>, std::make_unsigned_t<Tcan>,
+                                 std::make_signed_t<Tcan>>;
 
         return getDataFromListPropertyRecursive<T, OppsignType>(prop.get());
 
@@ -1642,7 +1642,7 @@ public:
     }
 
     // Cast to 32 bit
-    typedef typename std::conditional<std::is_signed<T>::value, int32_t, uint32_t>::type IndType;
+    using IndType = std::conditional_t<std::is_signed_v<T>, int32_t, uint32_t>;
     std::vector<std::vector<IndType>> intInds;
     for (std::vector<T>& l : indices) {
       std::vector<IndType> thisInds;
