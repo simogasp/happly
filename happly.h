@@ -64,7 +64,7 @@ SOFTWARE.
 #include <vector>
 #include <string_view>
 #include <unordered_set>
-#include <climits>
+#include <ranges>
 
 // General namespace wrapping all Happly things.
 namespace happly {
@@ -1430,10 +1430,7 @@ public:
    */
   std::vector<std::string> getElementNames() {
     std::vector<std::string> names;
-    names.reserve(elements.size());
-    for (Element& e : elements) {
-      names.push_back(e.name);
-    }
+    std::ranges::transform(elements, std::back_inserter(names), &Element::name);
     return names;
   }
 
