@@ -81,15 +81,15 @@ enum class DataFormat {
 
 // Type name strings
 // clang-format off
-template <typename T> std::string typeName()                { return "unknown"; }
-template<> inline std::string typeName<int8_t>()            { return "char";    }
-template<> inline std::string typeName<uint8_t>()           { return "uchar";   }
-template<> inline std::string typeName<int16_t>()           { return "short";   }
-template<> inline std::string typeName<uint16_t>()          { return "ushort";  }
-template<> inline std::string typeName<int32_t>()           { return "int";     }
-template<> inline std::string typeName<uint32_t>()          { return "uint";    }
-template<> inline std::string typeName<float>()             { return "float";   }
-template<> inline std::string typeName<double>()            { return "double";  }
+template <typename T> constexpr std::string typeName()         { return "unknown"; }
+template<> constexpr std::string typeName<int8_t>()            { return "char";    }
+template<> constexpr std::string typeName<uint8_t>()           { return "uchar";   }
+template<> constexpr std::string typeName<int16_t>()           { return "short";   }
+template<> constexpr std::string typeName<uint16_t>()          { return "ushort";  }
+template<> constexpr std::string typeName<int32_t>()           { return "int";     }
+template<> constexpr std::string typeName<uint32_t>()          { return "uint";    }
+template<> constexpr std::string typeName<float>()             { return "float";   }
+template<> constexpr std::string typeName<double>()            { return "double";  }
 
 // Template hackery that makes getProperty<T>() and friends pretty while automatically picking up smaller types
 inline namespace details {
