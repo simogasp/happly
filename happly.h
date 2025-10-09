@@ -850,10 +850,7 @@ public:
    */
   std::vector<std::string> getPropertyNames() {
     std::vector<std::string> names;
-    names.reserve(properties.size());
-    for (const std::unique_ptr<Property>& p : properties) {
-      names.push_back(p->name);
-    }
+    std::ranges::transform(properties, std::back_inserter(names), [](const auto& p) { return p->name; });
     return names;
   }
 
