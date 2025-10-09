@@ -1593,8 +1593,8 @@ public:
    */
   void addVertexColors(const std::vector<std::array<double, 3>>& colors) {
 
-    std::string vertexName = "vertex";
-    std::size_t N = colors.size();
+    const std::string vertexName = "vertex";
+    const std::size_t N = colors.size();
 
     // Create the element
     if (!hasElement(vertexName)) {
