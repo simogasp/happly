@@ -1691,7 +1691,8 @@ private:
       parseBinaryBigEndian(inStream, verbose);
     }
     // === Parse data from an ASCII file
-    else if (inputDataFormat == DataFormat::ASCII) {
+    else {
+      // DataFormat::ASCII)
       parseASCII(inStream, verbose);
     }
   }
