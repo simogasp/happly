@@ -671,7 +671,7 @@ public:
  * @param name The name of the property to construct.
  * @param typeStr A string naming the type according to the format.
  * @param isList Is this a plain property, or a list property?
- * @param listCountTypeStr If a list property, the type of the count varible.
+ * @param listCountTypeStr If a list property, the type of the count variable.
  *
  * @return A new Property with the proper type.
  */
