@@ -374,7 +374,7 @@ public:
    */
   void writeDataASCII(std::ostream& outStream, std::size_t iElement) override {
     outStream.precision(std::numeric_limits<T>::max_digits10);
-    outStream << static_cast<typename SerializeType<T>::type>(data[iElement]); // case is usually a no-op
+    outStream << static_cast<SerializeType<T>::type>(data[iElement]); // case is usually a no-op
   }
 
   /**
@@ -583,7 +583,7 @@ public:
     outStream << dataCount;
     outStream.precision(std::numeric_limits<T>::max_digits10);
     for (std::size_t iFlat = dataStart; iFlat < dataEnd; ++iFlat) {
-      outStream << " " << static_cast<typename SerializeType<T>::type>(flattenedData[iFlat]); // cast is usually a no-op
+      outStream << " " << static_cast<SerializeType<T>::type>(flattenedData[iFlat]); // cast is usually a no-op
     }
   }
 
