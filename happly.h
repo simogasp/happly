@@ -913,12 +913,7 @@ public:
     }
 
     // If there is already some property with this name, remove it
-    for (std::size_t i = 0; i < properties.size(); ++i) {
-      if (properties[i]->name == propertyName) {
-        properties.erase(properties.begin() + i);
-        i--;
-      }
-    }
+    std::erase_if(properties, [&propertyName](const auto& prop) { return prop->name == propertyName;});
 
     // Copy to canonical type. Often a no-op, but takes care of standardizing widths across platforms.
     std::vector<std::vector<typename CanonicalName<T>::type>> canonicalListVec;
