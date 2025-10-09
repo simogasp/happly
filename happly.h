@@ -426,7 +426,8 @@ public:
   /**
    * @brief Create a new Property with the given name.
    *
-   * @param name_
+   * @param name_ Name of the property.
+   * @param listCountBytes_ Number of bytes used to store the count for lists of data.
    */
   TypedListProperty(const std::string& name_, int listCountBytes_) : Property(name_), listCountBytes(listCountBytes_) {
     if (typeName<T>() == "unknown") {
