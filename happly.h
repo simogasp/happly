@@ -115,13 +115,10 @@ template <class T> struct SerializeType                 { using type = T; };
 template <> struct SerializeType<uint8_t>               { using type = int32_t; };
 template <> struct SerializeType< int8_t>               { using type = int32_t; };
 
-// Give address only if types are same (used below when conditionally copying data)
-// last int/char arg is to resolve ambiguous overloads, just always pass 0 and the int version will be preferred
-template <typename S, typename T>
-S* addressIfSame(T&, char) {
-  throw std::runtime_error("tried to take address for types that are not same");}
-template <typename S>
-S* addressIfSame(S& t, int) {return &t;}
+
+// Define a concept to check if two types are the same
+template <typename T, typename U>
+concept SameAs = std::is_same_v<T, U>;
 
 // clang-format on
 } // namespace
@@ -1203,9 +1200,9 @@ public:
       std::vector<D>* castedFlatVec = nullptr;
       std::vector<D> castedFlatVecCopy; // we _might_ make a copy here, depending on is_same below
 
-      if (std::is_same<std::vector<D>, std::vector<Tcan>>::value) {
-        // just use the array we already have
-        castedFlatVec = addressIfSame<std::vector<D>>(castedProp->flattenedData, 0 /* dummy arg to disambiguate */);
+      if constexpr (SameAs<D, Tcan>) {
+        // Just use the array we already have
+        castedFlatVec = &castedProp->flattenedData;
       } else {
         // make a copy
         castedFlatVecCopy.reserve(castedProp->flattenedData.size());
