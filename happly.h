@@ -1458,9 +1458,9 @@ public:
    */
   std::vector<std::array<double, 3>> getVertexPositions(const std::string& vertexElementName = "vertex") {
 
-    std::vector<double> xPos = getElement(vertexElementName).getProperty<double>("x");
-    std::vector<double> yPos = getElement(vertexElementName).getProperty<double>("y");
-    std::vector<double> zPos = getElement(vertexElementName).getProperty<double>("z");
+    const std::vector<double> xPos = getElement(vertexElementName).getProperty<double>("x");
+    const std::vector<double> yPos = getElement(vertexElementName).getProperty<double>("y");
+    const std::vector<double> zPos = getElement(vertexElementName).getProperty<double>("z");
 
     std::vector<std::array<double, 3>> result(xPos.size());
     for (std::size_t i = 0; i < result.size(); ++i) {
@@ -1481,9 +1481,9 @@ public:
    */
   std::vector<std::array<unsigned char, 3>> getVertexColors(const std::string& vertexElementName = "vertex") {
 
-    std::vector<unsigned char> r = getElement(vertexElementName).getProperty<unsigned char>("red");
-    std::vector<unsigned char> g = getElement(vertexElementName).getProperty<unsigned char>("green");
-    std::vector<unsigned char> b = getElement(vertexElementName).getProperty<unsigned char>("blue");
+    const std::vector<unsigned char> r = getElement(vertexElementName).getProperty<unsigned char>("red");
+    const std::vector<unsigned char> g = getElement(vertexElementName).getProperty<unsigned char>("green");
+    const std::vector<unsigned char> b = getElement(vertexElementName).getProperty<unsigned char>("blue");
 
     std::vector<std::array<unsigned char, 3>> result(r.size());
     for (std::size_t i = 0; i < result.size(); ++i) {
