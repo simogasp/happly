@@ -547,7 +547,7 @@ public:
     flattenedIndexStart.emplace_back(afterSize);
 
     // Swap endian order of list elements
-    for (std::size_t iFlat = currSize; iFlat < afterSize; iFlat++) {
+    for (std::size_t iFlat = currSize; iFlat < afterSize; ++iFlat) {
       flattenedData[iFlat] = swapEndian(flattenedData[iFlat]);
     }
   }
@@ -569,11 +569,11 @@ public:
    * @param iElement index of the element to write.
    */
   void writeDataASCII(std::ostream& outStream, std::size_t iElement) override {
-    std::size_t dataStart = flattenedIndexStart[iElement];
-    std::size_t dataEnd = flattenedIndexStart[iElement + 1];
+    const std::size_t dataStart = flattenedIndexStart[iElement];
+    const std::size_t dataEnd = flattenedIndexStart[iElement + 1];
 
     // Get the number of list elements as a uchar, and ensure the value fits
-    std::size_t dataCount = dataEnd - dataStart;
+    const std::size_t dataCount = dataEnd - dataStart;
     if (dataCount > std::numeric_limits<uint8_t>::max()) {
       throw std::runtime_error(
           "List property has an element with more entries than fit in a uchar. See note in README.");
@@ -593,11 +593,11 @@ public:
    * @param iElement index of the element to write.
    */
   void writeDataBinary(std::ostream& outStream, std::size_t iElement) override {
-    std::size_t dataStart = flattenedIndexStart[iElement];
-    std::size_t dataEnd = flattenedIndexStart[iElement + 1];
+    const std::size_t dataStart = flattenedIndexStart[iElement];
+    const std::size_t dataEnd = flattenedIndexStart[iElement + 1];
 
     // Get the number of list elements as a uchar, and ensure the value fits
-    std::size_t dataCount = dataEnd - dataStart;
+    const std::size_t dataCount = dataEnd - dataStart;
     if (dataCount > std::numeric_limits<uint8_t>::max()) {
       throw std::runtime_error(
           "List property has an element with more entries than fit in a uchar. See note in README.");
@@ -615,11 +615,11 @@ public:
    * @param iElement index of the element to write.
    */
   void writeDataBinaryBigEndian(std::ostream& outStream, std::size_t iElement) override {
-    std::size_t dataStart = flattenedIndexStart[iElement];
-    std::size_t dataEnd = flattenedIndexStart[iElement + 1];
+    const std::size_t dataStart = flattenedIndexStart[iElement];
+    const std::size_t dataEnd = flattenedIndexStart[iElement + 1];
 
     // Get the number of list elements as a uchar, and ensure the value fits
-    std::size_t dataCount = dataEnd - dataStart;
+    const std::size_t dataCount = dataEnd - dataStart;
     if (dataCount > std::numeric_limits<uint8_t>::max()) {
       throw std::runtime_error(
           "List property has an element with more entries than fit in a uchar. See note in README.");
