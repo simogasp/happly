@@ -1353,6 +1353,42 @@ TEST(PerfTest, WriteReadFloatList) {
   std::cout << "  time elapsed = " << std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart).count() << "us" << std::endl;
 }
 
+TEST(UtilityTest, ContainsWhitespaceEmpty) {
+  EXPECT_FALSE(happly::containsWhitespace(""));
+}
+
+TEST(UtilityTest, ContainsWhitespaceNoWhitespace) {
+  EXPECT_FALSE(happly::containsWhitespace("test"));
+  EXPECT_FALSE(happly::containsWhitespace("test_elem"));
+  EXPECT_FALSE(happly::containsWhitespace("property123"));
+  EXPECT_FALSE(happly::containsWhitespace("CamelCase"));
+  EXPECT_FALSE(happly::containsWhitespace("under_score_name"));
+}
+
+TEST(UtilityTest, ContainsWhitespaceSpace) {
+  EXPECT_TRUE(happly::containsWhitespace("test elem"));
+  EXPECT_TRUE(happly::containsWhitespace(" test"));
+  EXPECT_TRUE(happly::containsWhitespace("test "));
+  EXPECT_TRUE(happly::containsWhitespace("multiple words here"));
+}
+
+TEST(UtilityTest, ContainsWhitespaceTab) {
+  EXPECT_TRUE(happly::containsWhitespace("test\telem"));
+  EXPECT_TRUE(happly::containsWhitespace("\ttest"));
+  EXPECT_TRUE(happly::containsWhitespace("test\t"));
+}
+
+TEST(UtilityTest, ContainsWhitespaceNewline) {
+  EXPECT_TRUE(happly::containsWhitespace("test\nelem"));
+  EXPECT_TRUE(happly::containsWhitespace("\ntest"));
+  EXPECT_TRUE(happly::containsWhitespace("test\n"));
+}
+
+TEST(UtilityTest, ContainsWhitespaceMixed) {
+  EXPECT_TRUE(happly::containsWhitespace("test \t\nelem"));
+  EXPECT_TRUE(happly::containsWhitespace(" \t\n"));
+}
+
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
