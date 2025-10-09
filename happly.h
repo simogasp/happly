@@ -33,7 +33,7 @@ SOFTWARE.
 
 // Require C++20
 #if __cplusplus < 202002L
-    #error "hapPLY requires C++20 or later. Please compile with -std=c++20 or higher."
+    #error "hapPLY requires C++20 or later. Please compile with -std=c++20 or higher. For MSVC, use /std:c++20 or later and /Zc:__cplusplus to get correct __cplusplus value."
 #endif
 
 // clang-format off
