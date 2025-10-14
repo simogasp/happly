@@ -256,7 +256,7 @@ inline bool isLittleEndian() {
 template <typename T>
 T swapEndian(T val) {
   const auto bytes = reinterpret_cast<char*>(&val);
-  for (unsigned int i = 0; i < sizeof(val) / 2; i++) {
+  for (auto i = 0u; i < sizeof(val) / 2; ++i) {
     std::swap(bytes[sizeof(val) - 1 - i], bytes[i]);
   }
   return val;
@@ -344,7 +344,7 @@ public:
     std::istringstream iss(tokens[currEntry]);
     typename SerializeType<T>::type tmp; // usually the same type as T
     iss >> tmp;
-    data.back() = tmp;
+    data.back() = static_cast<T>(tmp);
     currEntry++;
   };
 
@@ -355,7 +355,7 @@ public:
    */
   void readNext(std::istream& stream) override {
     data.emplace_back();
-    stream.read(reinterpret_cast<char*>(&data.back()), sizeof(T));
+    stream.read(reinterpret_cast<char*>(&data.back()), static_cast<std::streamsize>(sizeof(T)));
   }
 
   /**
@@ -365,7 +365,7 @@ public:
    */
   void readNextBigEndian(std::istream& stream) override {
     data.emplace_back();
-    stream.read(reinterpret_cast<char*>(&data.back()), sizeof(T));
+    stream.read(reinterpret_cast<char*>(&data.back()), static_cast<std::streamsize>(sizeof(T)));
     data.back() = swapEndian(data.back());
   }
 
@@ -396,7 +396,7 @@ public:
    * @param iElement index of the element to write.
    */
   void writeDataBinary(std::ostream& outStream, std::size_t iElement) override {
-    outStream.write(reinterpret_cast<char*>(&data[iElement]), sizeof(T));
+    outStream.write(reinterpret_cast<char*>(&data[iElement]), static_cast<std::streamsize>(sizeof(T)));
   }
 
   /**
@@ -407,7 +407,7 @@ public:
    */
   void writeDataBinaryBigEndian(std::ostream& outStream, std::size_t iElement) override {
     auto value = swapEndian(data[iElement]);
-    outStream.write(reinterpret_cast<char*>(&value), sizeof(T));
+    outStream.write(reinterpret_cast<char*>(&value), static_cast<std::streamsize>(sizeof(T)));
   }
 
   /**
@@ -506,7 +506,7 @@ public:
       std::istringstream iss_tmp(tokens[currEntry]);
       typename SerializeType<T>::type tmp; // usually the same type as T
       iss_tmp >> tmp;
-      flattenedData[iFlat] = tmp;
+      flattenedData[iFlat] = static_cast<T>(tmp);
       currEntry++;
     }
     flattenedIndexStart.emplace_back(afterSize);
@@ -528,7 +528,7 @@ public:
     std::size_t afterSize = currSize + count;
     flattenedData.resize(afterSize);
     if (count > 0) {
-      stream.read(reinterpret_cast<char*>(&flattenedData[currSize]), count * sizeof(T));
+      stream.read(reinterpret_cast<char*>(&flattenedData[currSize]), static_cast<std::streamsize>(count * sizeof(T)));
     }
     flattenedIndexStart.emplace_back(afterSize);
   }
@@ -556,7 +556,7 @@ public:
     std::size_t afterSize = currSize + count;
     flattenedData.resize(afterSize);
     if (count > 0) {
-      stream.read(reinterpret_cast<char*>(&flattenedData[currSize]), count * sizeof(T));
+      stream.read(reinterpret_cast<char*>(&flattenedData[currSize]), static_cast<std::streamsize>(count * sizeof(T)));
     }
     flattenedIndexStart.emplace_back(afterSize);
 
@@ -618,8 +618,8 @@ public:
     }
     auto count = static_cast<uint8_t>(dataCount);
 
-    outStream.write(reinterpret_cast<char*>(&count), sizeof(uint8_t));
-    outStream.write(reinterpret_cast<char*>(&flattenedData[dataStart]), count * sizeof(T));
+    outStream.write(reinterpret_cast<char*>(&count), static_cast<std::streamsize>(sizeof(uint8_t)));
+    outStream.write(reinterpret_cast<char*>(&flattenedData[dataStart]), static_cast<std::streamsize>(count * sizeof(T)));
   }
 
   /**
@@ -640,10 +640,10 @@ public:
     }
     auto count = static_cast<uint8_t>(dataCount);
 
-    outStream.write(reinterpret_cast<char*>(&count), sizeof(uint8_t));
+    outStream.write(reinterpret_cast<char*>(&count), static_cast<std::streamsize>(sizeof(uint8_t)));
     for (std::size_t iFlat = dataStart; iFlat < dataEnd; ++iFlat) {
       T value = swapEndian(flattenedData[iFlat]);
-      outStream.write(reinterpret_cast<char*>(&value), sizeof(T));
+      outStream.write(reinterpret_cast<char*>(&value), static_cast<std::streamsize>(sizeof(T)));
     }
   }
 
