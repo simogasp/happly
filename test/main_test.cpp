@@ -15,8 +15,8 @@ void DoubleArrayVecEq(std::vector<std::array<double, 3>>& arr1, std::vector<std:
 
   EXPECT_EQ(arr1.size(), arr2.size());
 
-  for (size_t i = 0; i < arr1.size(); i++) {
-    for (int j = 0; j < 3; j++) {
+  for (auto i = 0u; i < arr1.size(); ++i) {
+    for (auto j = 0u; j < 3; ++j) {
       EXPECT_DOUBLE_EQ(arr1[i][j], arr2[i][j]);
     }
   }
@@ -1129,16 +1129,17 @@ TEST(TypePromotionTest, FaceIndSign) {
 
   happly::PLYData ply;
   ply.addElement("face", 3);
-  std::vector<std::vector<short>> faceInds{{1, 3, 4}, {0, -2, 4, 5}, {1, 1, 1}};
-  std::vector<std::vector<int>> faceIndsI{{1, 3, 4}, {0, -2, 4, 5}, {1, 1, 1}};
-  std::vector<std::vector<unsigned int>> faceIndsU{{1, 3, 4}, {0, 2, 4, 5}, {1, 1, 1}};
+  const std::vector<std::vector<short>> faceInds{{1, 3, 4}, {0, -2, 4, 5}, {1, 1, 1}};
+  const std::vector<std::vector<int>> faceIndsI{{1, 3, 4}, {0, -2, 4, 5}, {1, 1, 1}};
+  const std::vector<std::vector<unsigned int>> faceIndsU{{1, 3, 4}, {0, 2, 4, 5}, {1, 1, 1}};
   ply.getElement("face").addListProperty("vertex_indices", faceInds);
 
-  std::vector<std::vector<int>> faceIndGetI = ply.getFaceIndices<int>();
+  const std::vector<std::vector<int>> faceIndGetI = ply.getFaceIndices<int>();
   EXPECT_EQ(faceIndsI, faceIndGetI);
 
-  std::vector<std::vector<unsigned int>> faceIndGetU = ply.getFaceIndices<unsigned int>();
+  const std::vector<std::vector<unsigned int>> faceIndGetU = ply.getFaceIndices<unsigned int>();
   EXPECT_NE(faceIndsU, faceIndGetU);
+  ply.write("mytemp.ply", happly::DataFormat::ASCII);
 }
 
 TEST(TypePromotionTest, FaceIndThrow) {
@@ -1311,34 +1312,37 @@ TEST(MeshTest, ReadWriteBinaryMeshStream) {
 
 TEST(PerfTest, WriteReadFloatList) {
 
+  using value_type = uint32_t;
   // Parameters
-  size_t innerSizeMax = 10;
-  size_t N = 100000;
+  value_type innerSizeMax{10u};
+  value_type N{100000u};
 
   // Random number makers
   std::mt19937 gen(777);
-  std::uniform_int_distribution<int> distInnerSize(1, innerSizeMax);
-  std::uniform_int_distribution<int> distValues(0, 1000000);
+  std::uniform_int_distribution<value_type> distInnerSize(1u, innerSizeMax);
+  std::uniform_int_distribution<value_type> distValues(0u, 1000000u);
 
   // Generate a long list of junk data
-  std::vector<std::vector<int>> testVals;
-  for (size_t i = 0; i < N; i++) {
-    size_t innerCount = distInnerSize(gen);
-    std::vector<int> innerVals;
-    for (size_t j = 0; j < innerCount; j++) {
-      int val = distValues(gen);
+  std::vector<std::vector<value_type>> testVals;
+  testVals.reserve(N);
+  for (auto i = 0u; i < N; ++i) {
+    auto innerCount = distInnerSize(gen);
+    std::vector<value_type> innerVals;
+    innerVals.reserve(innerCount);
+    for (auto j = 0u; j < innerCount; ++j) {
+      auto val = distValues(gen);
       innerVals.push_back(val);
     }
     testVals.push_back(innerVals);
   }
 
   // Start timing
-  auto tStart = std::chrono::steady_clock::now();
+  const auto tStart = std::chrono::steady_clock::now();
 
   // Create a ply file
   happly::PLYData plyOut;
   plyOut.addElement("testElem", N);
-  plyOut.getElement("testElem").addListProperty<int>("testVals", testVals);
+  plyOut.getElement("testElem").addListProperty<value_type>("testVals", testVals);
 
   // Write it to a stream
   std::stringstream ioBuffer;
