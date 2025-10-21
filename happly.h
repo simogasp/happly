@@ -281,8 +281,8 @@ std::vector<std::vector<T>> unflattenList(const std::vector<T>& flatList, const 
 
   // Copy each sublist
   for (std::size_t iOuter = 0; iOuter < outerCount; iOuter++) {
-    std::size_t iFlatStart = flatListStarts[iOuter];
-    std::size_t iFlatEnd = flatListStarts[iOuter + 1];
+    const auto iFlatStart = static_cast<std::ptrdiff_t>(flatListStarts[iOuter]);
+    const auto iFlatEnd = static_cast<std::ptrdiff_t>(flatListStarts[iOuter + 1]);
     outLists[iOuter].insert(outLists[iOuter].begin(), flatList.begin() + iFlatStart, flatList.begin() + iFlatEnd);
   }
 
