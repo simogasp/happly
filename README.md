@@ -1,18 +1,20 @@
 <p align="center">
-<img src="https://github.com/nmwsharp/happly/blob/master/happly_logo.jpg" width="200"> 
+<img src="happly_logo.jpg" width="200">
 </p>
 <p align="center">A header-only C++ reader/writer for the PLY file format. Parse .ply happily! <p align="center">
 
-### Features:
+### Features
+
 - Header only-- drop in and use!
 - Read and write to plaintext and binary variants of format with same API!
 - Supports general data in `.ply` files, along with common-case helpers for reading/writing mesh data!
 - Automatic type promotion-- eg, if a file contains a `float` field, you can seamlessly read it as a `double`!
 - Tested, documented, and MIT-licensed!
 
-[![actions status linux](https://github.com/nmwsharp/happly/workflows/linux/badge.svg)](https://github.com/nmwsharp/happly/actions)
-[![actions status macOS](https://github.com/nmwsharp/happly/workflows/macOS/badge.svg)](https://github.com/nmwsharp/happly/actions)
-[![actions status windows](https://github.com/nmwsharp/happly/workflows/windows/badge.svg)](https://github.com/nmwsharp/happly/actions)
+[![actions status linux](https://github.com/simogasp/happly/workflows/linux/badge.svg)](https://github.com/simogasp/happly/actions)
+[![actions status macOS](https://github.com/simogasp/happly/workflows/macOS/badge.svg)](https://github.com/simogasp/happly/actions)
+[![actions status windows](https://github.com/simogasp/happly/workflows/windows/badge.svg)](https://github.com/simogasp/happly/actions)
+[![CodeQL](https://github.com/simogasp/happly/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/simogasp/happly/actions/workflows/github-code-scanning/codeql)
 
 ## The `.ply` format and hapPLY
 
@@ -23,6 +25,7 @@ Although the `.ply` format is commonly used to store 3D mesh and point cloud dat
 ## Examples
 
 Read basic data
+
 ```cpp
 #include "happly.h"
 
@@ -42,6 +45,7 @@ std::vector<double> elementA_prop1_as_double =
 ```
 
 Write basic data
+
 ```cpp
 #include "happly.h"
 
@@ -68,6 +72,7 @@ plyOut.write("my_output_file.ply", happly::DataFormat::Binary);
 ```
 
 Read mesh-like data
+
 ```cpp
 #include "happly.h"
 
@@ -80,6 +85,7 @@ std::vector<std::vector<size_t>> fInd = plyIn.getFaceIndices<size_t>();
 ```
 
 Write mesh-like data
+
 ```cpp
 #include "happly.h"
 
@@ -102,10 +108,9 @@ plyOut.write("my_output_mesh_file.ply", happly::DataFormat::ASCII);
 
 ```
 
-
 ## API
 
-This assumes a basic familiarity with the file format; I suggest reading [Paul Bourke's webpage](http://paulbourke.net/dataformats/ply/) if you are new to `.ply`. 
+This assumes a basic familiarity with the file format; I suggest reading [Paul Bourke's webpage](http://paulbourke.net/dataformats/ply/) if you are new to `.ply`.
 
 All of the outward-facing functionality of hapPLY is grouped under a single (namespaced) class called `happly::PLYData`, which represents a collection of elements and their properties. `PLYData` objects can be constructed from an existing file `PLYData::PLYData("my_input.ply")`, or you can fill with your own data and then write to file `PLYData::write("my_output.ply", DataFormat::ASCII)`.
 
@@ -165,14 +170,14 @@ Generally speaking, hapPLY uses C++ exceptions to communicate errors-- most of t
 
 - `void addFaceIndices(std::vector<std::vector<T>>& indices)` Adds vertex indices for faces to an object, under the element name "face" with the property name "vertex_indices". Automatically converts to a 32-bit integer type with the same signedness as the input type, and throws if the data cannot be converted to that type.
 
+## Known issues
 
-## Known issues:
 - Writing floating-point values of `inf` or `nan` in ASCII mode is not supported, because the .ply format does not specify how they should be written (C++'s ofstream and ifstream don't even treat them consistently). These values work just fine in binary mode.
 - Currently hapPLY does not allow the user to specify a type for the variable which indicates how many elements are in a list; it always uses `uchar` (and throws and error if the data does not fit in a uchar). Note that at least for mesh-like data, popular software only accepts `uchar`.
 - Almost all modern computers are little-endian. If you happen to have a big-endian platform, be aware that the codebase has not been tested in a big-endian environment, and might have bugs related to binary reading/writing there. Note that the _platform_ endianness is distinct from the _file_ endianness---reading/writing either big- or little-endian files certainly works just fine as long as you're running the code on a little-endian computer (as you problably are).
 
+## Current TODOs
 
-## Current TODOs:
 - Add more common-case helpers for meshes (texture coordinates, etc)
 - Add common-case helpers for point clouds
 - Bindings for Python, Matlab?
